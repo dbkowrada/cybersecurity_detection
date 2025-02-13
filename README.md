@@ -21,6 +21,12 @@ cybersecurity_detection/
 │   └── preprocessing.py        # Data preprocessing module
 ├── notebooks/                 # Jupyter Notebooks
 │   └── model_development.ipynb # ML model experimentation
+├── data/
+│   ├── sample/
+│   │   ├── example_single.csv     # For single prediction
+│   │   ├── example_batch.csv      # For batch prediction
+│   │   └── training_sample.csv    # Sample training data
+│   └── README.md                  # Data description
 ├── requirements.txt            # Required dependencies
 ├── LICENSE                     # MIT License
 ├── .gitignore                  # This .gitignore
