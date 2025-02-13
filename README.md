@@ -292,7 +292,7 @@ sudo apt-get install python3-tk
 ## 📞 Contact & Support  
 
 💬 **Have questions or found an issue?**  
-📌 Open an **issue** in the GitHub repository 🚀  
+📌 **Linkedin:** https://www.linkedin.com/in/dbkowrada (or)  Open an **issue** in the GitHub repository 🚀  
 👨‍💻 We are welcome to improve this project! 🤝  
 
 ---
