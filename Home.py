@@ -117,4 +117,4 @@ Your input data should include these key features:
 
 # Footer
 st.markdown("---")
-st.markdown("*Built with Streamlit*")
+st.markdown("*Durga Bhavani : Built with Streamlit and Python*")
