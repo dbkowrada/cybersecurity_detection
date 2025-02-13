@@ -20,60 +20,127 @@ if 'model' not in st.session_state or st.session_state['model'] is None:
     st.error("⚠️ No trained model found. Please train a model first!")
     st.stop()
 
-# Create input form
-st.header("Enter Security Event Details")
+# Input method selection
+input_method = st.radio(
+    "Select Input Method:",
+    ["Manual Input", "CSV Upload"],
+    help="Choose how you want to input the data"
+)
 
-# Create three columns for input fields
-col1, col2, col3 = st.columns(3)
+if input_method == "Manual Input":
+    # Create input form
+    st.header("Enter Security Event Details")
 
-with col1:
-    st.subheader("Network Information")
-    source_port = st.number_input(
-        "Source Port",
-        min_value=0,
-        max_value=65535
+    # Create three columns for input fields
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.subheader("Network Information")
+        source_port = st.number_input(
+            "Source Port",
+            min_value=0,
+            max_value=65535
+        )
+        
+        dest_port = st.number_input(
+            "Destination Port",
+            min_value=0,
+            max_value=65535
+        )
+        
+        packet_length = st.number_input(
+            "Packet Length",
+            min_value=0
+        )
+
+    with col2:
+        st.subheader("Attack Indicators")
+        anomaly_score = st.slider(
+            "Anomaly Score",
+            min_value=0.0,
+            max_value=1.0,
+            value=0.5
+        )
+        
+        attack_signature = st.text_input("Attack Signature")
+
+    with col3:
+        st.subheader("Additional Information")
+        source_ip = st.text_input("Source IP")
+        dest_ip = st.text_input("Destination IP")
+
+else:  # CSV Upload
+    st.header("Upload Single Record")
+    
+    # Show example format
+    st.info("""
+    CSV should contain one row with these columns:
+    - Source Port
+    - Destination Port
+    - Packet Length
+    - Anomaly Scores
+    - Attack Signature
+    - Source IP Address
+    - Destination IP Address
+    """)
+    
+    # Provide sample template
+    sample_data = pd.DataFrame({
+        'Source Port': [80],
+        'Destination Port': [443],
+        'Packet Length': [1024],
+        'Anomaly Scores': [0.7],
+        'Attack Signature': ['sample_signature'],
+        'Source IP Address': ['192.168.1.1'],
+        'Destination IP Address': ['10.0.0.1']
+    })
+    
+    # Download template button
+    st.download_button(
+        "📥 Download Sample Template",
+        sample_data.to_csv(index=False),
+        "single_prediction_template.csv",
+        "text/csv",
+        help="Download a sample CSV template"
     )
     
-    dest_port = st.number_input(
-        "Destination Port",
-        min_value=0,
-        max_value=65535
-    )
-    
-    packet_length = st.number_input(
-        "Packet Length",
-        min_value=0
+    uploaded_file = st.file_uploader(
+        "Upload your CSV file",
+        type=['csv'],
+        help="Upload a CSV file with a single record"
     )
 
-with col2:
-    st.subheader("Attack Indicators")
-    anomaly_score = st.slider(
-        "Anomaly Score",
-        min_value=0.0,
-        max_value=1.0,
-        value=0.5
-    )
-    
-    attack_signature = st.text_input("Attack Signature")
-
-with col3:
-    st.subheader("Additional Information")
-    source_ip = st.text_input("Source IP")
-    dest_ip = st.text_input("Destination IP")
+    if uploaded_file is not None:
+        try:
+            input_data = pd.read_csv(uploaded_file)
+            if len(input_data) > 1:
+                st.error("Please upload CSV with only one row!")
+                st.stop()
+            st.success("✅ CSV loaded successfully")
+            st.write("Preview of loaded data:")
+            st.dataframe(input_data)
+        except Exception as e:
+            st.error(f"Error loading CSV: {str(e)}")
 
 # Make prediction button
 if st.button("Predict Attack Type", type="primary"):
     try:
-        # Create DataFrame from inputs
-        input_data = pd.DataFrame({
-            'Source Port': [source_port],
-            'Destination Port': [dest_port],
-            'Packet Length': [packet_length],
-            'Anomaly Scores': [anomaly_score],
-            'Attack Signature': [attack_signature],
-            'Source IP Address': [source_ip],
-            'Destination IP Address': [dest_ip]
-        })
+        if input_method == "CSV Upload":
+            if uploaded_file is None:
+                st.error("Please upload a CSV file first!")
+                st.stop()
+            # input_data already contains the CSV data
+        else:
+            # Create DataFrame from manual inputs
+            input_data = pd.DataFrame({
+                'Source Port': [source_port],
+                'Destination Port': [dest_port],
+                'Packet Length': [packet_length],
+                'Anomaly Scores': [anomaly_score],
+                'Attack Signature': [attack_signature],
+                'Source IP Address': [source_ip],
+                'Destination IP Address': [dest_ip]
+            })
         
         # Preprocess input data
         processed_input, _ = preprocess_data(input_data, is_training=False)
