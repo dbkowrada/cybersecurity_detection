@@ -22,8 +22,8 @@ cybersecurity_detection/
 ├── notebooks/                 # Jupyter Notebooks
 │   └── model_development.ipynb # ML model experimentation
 ├── requirements.txt            # Required dependencies
-├── LICENSE                     # Required dependencies
-├── .gitignore                  # Required dependencies
+├── LICENSE                     # MIT License
+├── .gitignore                  # This .gitignore
 └── README.md                   # Project documentation
 ```
 
