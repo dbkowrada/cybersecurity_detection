@@ -39,7 +39,8 @@ cybersecurity_detection/
 
 💻 **System Requirements:**  
 - Python **3.8+** 🐍  
-- `pip` (**Python package manager**)  
+- `pip` (**Python package manager**)  🛠️ *(Pre-installed with Python but can be updated if needed)*  
+- **Git** 🌍 *(Required for cloning the repository and version control)*   
 
 ---
 
